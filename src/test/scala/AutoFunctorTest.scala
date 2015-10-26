@@ -17,18 +17,16 @@ class AutoFunctorTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-       AutoFunctor(List(Some(1), Some(2), None)).map{ i: Int => i * 2 }.
+       AutoFunctor(List(Some(1), Some(2), None)).
+         map{ i: Int => i * 2 }.
          get : List[Option[Int]]
     """ should compile
   }
 
   it should "catch functors in between" in {
     """
-       import scalaz._; import Scalaz._
-       import AutoFunctorStrategy._
-
        AutoFunctor(List(Some(1), Some(2), None)).
-         map{ i: Option[Int] => i.getOrElse(3) }(wrap(implicitly[Functor[List]], implicitly[AutoFunctorStrategy[Option[Int], Option[Int], Int, Int]])).
+         map{ i: Option[Int] => i.getOrElse(3) }.
          get : List[Int]
     """ should compile
   }
