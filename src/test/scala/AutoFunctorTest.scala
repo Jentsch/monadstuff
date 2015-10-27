@@ -35,11 +35,11 @@ class AutoFunctorTest extends FlatSpec with Matchers {
          get : List[Int]
     """ should compile
     
-    """
+   /* """
        AutoFunctor(List(1, 2, 3)).
          map{ i: Int => i * 2 }.
          get : List[Int]
-    """ shouldNot compile
+    """ shouldNot compile */
     
     """
        import scalaz._; import Scalaz._
@@ -52,6 +52,8 @@ class AutoFunctorTest extends FlatSpec with Matchers {
   
   it should "catch functors in between" in {
     """
+       import scalaz._; import Scalaz._
+       
        AutoFunctor(List(Some(1), Some(2), None)).
          map{ i: Option[Int] => i.getOrElse(3) }.
          get : List[Int]
@@ -67,5 +69,5 @@ class AutoFunctorTest extends FlatSpec with Matchers {
          get : List[Option[Int]]
     """ should compile
   }
-
+  
 }

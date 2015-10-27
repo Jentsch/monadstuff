@@ -11,22 +11,19 @@ object AutoFunctorStrategy {
     new AutoFunctorStrategy[I, I, O, O] {
       override def map(data: I, f: I => O): O = f(data)
     }
-  
-  implicit def liLiI[I, O, F[_]](implicit inner: Functor[F]): AutoFunctorStrategy[F[I], I, O, F[O]] = 
-    new AutoFunctorStrategy[F[I],I,O,F[O]] {
+
+  implicit def liLiI[I, O, F[_]](implicit inner: Functor[F]): AutoFunctorStrategy[F[I], I, O, F[O]] =
+    new AutoFunctorStrategy[F[I], I, O, F[O]] {
       override def map(data: F[I], f: I => O): F[O] =
         inner.map(data)(f)
     }
-  
-  implicit object loiII extends AutoFunctorStrategy[List[Option[Int]],Int,Int,List[Option[Int]]] {
-    override def map(data: List[Option[Int]], f: Int => Int): List[Option[Int]] =
-      data.map(_.map(f))
-  }
-  
-  implicit def loiOiI[I, O] = new AutoFunctorStrategy[List[Option[I]],Option[I], O,List[O]] {
-    override def map(data: List[Option[I]], f: Option[I] => O): List[O] =
-      data.map(f)
-  }
+
+  implicit def loiII[I, O, F1[_], F2[_]](implicit f1: Functor[F1], f2: Functor[F2]): AutoFunctorStrategy[F1[F2[I]], I, O, F1[F2[O]]] =
+    new AutoFunctorStrategy[F1[F2[I]], I, O, F1[F2[O]]] {
+      override def map(data: F1[F2[I]], f: I => O): F1[F2[O]] =
+        f1.map(data)(f2.map(_)(f))
+    }
+
   /* implicit def wrap[SI, I, O, SO, F[_]]
   (implicit outer: Functor[F],
    inner: AutoFunctorStrategy[SI, I, O, SO]): AutoFunctorStrategy[F[SI], I, O, F[SO]] =
