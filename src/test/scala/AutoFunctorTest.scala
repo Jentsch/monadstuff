@@ -1,13 +1,6 @@
 import org.scalatest.{FlatSpec, Matchers}
 
 class AutoFunctorTest extends FlatSpec with Matchers {
-
-  "AutoFunctors map" should "behave like a Some functor without any inner monad" in {
-    val mapped = AutoFunctor("string").map{ (str: String) => str.length } 
-    
-    mapped === AutoFunctor(6)
-  } 
-  
   it should "behave the same like a normal map on highest nested functor" in {
     """
        import scalaz._; import Scalaz._
@@ -34,12 +27,12 @@ class AutoFunctorTest extends FlatSpec with Matchers {
          map{ i: Int => i * 2 }.
          get : List[Int]
     """ should compile
-    
-   /* """
+
+    """
        AutoFunctor(List(1, 2, 3)).
          map{ i: Int => i * 2 }.
          get : List[Int]
-    """ shouldNot compile */
+    """ shouldNot compile
     
     """
        import scalaz._; import Scalaz._
@@ -48,6 +41,16 @@ class AutoFunctorTest extends FlatSpec with Matchers {
          map{ i: Int => i * 2 }.
          get : NonEmptyList[Int]
     """ should compile
+  }
+
+  it should "not map over discontiguous functors" in {
+    """
+       import scalaz._; import Scalaz._
+
+       AutoFunctor(Some(List(1, 2, 3))).
+         map{ i: Option[Int] => i.getOrElse(3) }.
+         get : List[Int]
+    """ shouldNot compile
   }
   
   it should "catch functors in between" in {
@@ -67,6 +70,18 @@ class AutoFunctorTest extends FlatSpec with Matchers {
        AutoFunctor(List(Some(1), Some(2), None)).
          map{ i: Int => i * 2 }.
          get : List[Option[Int]]
+    """ should compile
+  }
+
+  it should "handle complexe cases" in {
+    """
+       import scalaz._; import Scalaz._
+       import scala.concurrent.Future
+       import scala.concurrent.ExecutionContext.Implicits.global
+
+       AutoFunctor(Future{???}: Future[List[Option[NonEmptyList[Int]]]]).
+         map{ i: NonEmptyList[Int] => i.size }.
+         get : Future[List[Option[Int]]]
     """ should compile
   }
   
