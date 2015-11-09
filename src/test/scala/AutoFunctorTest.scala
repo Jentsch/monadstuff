@@ -80,6 +80,16 @@ class AutoFunctorTest extends FlatSpec with Matchers {
        import scala.concurrent.ExecutionContext.Implicits.global
 
        AutoFunctor(Future{???}: Future[List[Option[NonEmptyList[Int]]]]).
+         map{ i: Int => i * 2}.
+         get : Future[List[Option[NonEmptyList[Int]]]]
+    """ should compile
+
+    """
+       import scalaz._; import Scalaz._
+       import scala.concurrent.Future
+       import scala.concurrent.ExecutionContext.Implicits.global
+
+       AutoFunctor(Future{???}: Future[List[Option[NonEmptyList[Int]]]]).
          map{ i: NonEmptyList[Int] => i.size }.
          get : Future[List[Option[Int]]]
     """ should compile

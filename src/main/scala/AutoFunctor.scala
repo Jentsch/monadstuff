@@ -7,6 +7,6 @@ case class AutoFunctor[SI](get: SI) {
    * 
    * Requires that the type of ```f``` is explicitly given.
    */
-  def map[I, O, SO](f: I => O)(implicit strategy: AutoFunctorStrategy[SI, I, O, SO]) =
-    new AutoFunctor[SO](strategy.map(get, f))
+  def map[I, O, SO](f: I => O)(implicit strategy: AutoFunctorStrategy[SI, I, O]): AutoFunctor[strategy.SO] =
+    new AutoFunctor(strategy.map(get, f))
 }

@@ -2,21 +2,36 @@
 import scala.language.higherKinds
 import scalaz.Functor
 
-trait AutoFunctorStrategy[-SI, +I, -O, +SO] {
+/**
+  *
+  * @tparam I Parameter of the function (in)
+  * @tparam O Return type of the function (out)
+  */
+trait AutoFunctorStrategy[SI, I, O] {
+  type SO
+
   def map(data: SI, f: I => O): SO
 }
 
 object AutoFunctorStrategy {
 
-  implicit def end[I, O, F[_]](implicit inner: Functor[F]): AutoFunctorStrategy[F[I], I, O, F[O]] =
-    new AutoFunctorStrategy[F[I], I, O, F[O]] {
-      override def map(data: F[I], f: I => O): F[O] =
-        inner.map(data)(f)
+  implicit def direct[I, O] =
+    new AutoFunctorStrategy[I, I, O] {
+      type SO = O
+
+      def map(data: I, f: I => O) = f(data)
     }
 
-  implicit def wrap[SI, I, O, SO, F[_]](implicit f1: Functor[F], inner: AutoFunctorStrategy[SI, I, O, SO]): AutoFunctorStrategy[F[SI], I, O, F[SO]] =
-    new AutoFunctorStrategy[F[SI], I, O, F[SO]] {
-      override def map(data: F[SI], f: I => O): F[SO] =
-        f1.map(data)(inner.map(_, f))
+  implicit def recursive[F[_], ISI, I, O](implicit outer: Functor[F], inner: AutoFunctorStrategy[ISI, I, O]) =
+    new AutoFunctorStrategy[F[ISI], I, O] {
+      override type SO = F[inner.SO]
+
+      override def map(data: F[ISI], f: I => O): SO = {
+        outer.map(data) { (unwrapped: ISI) =>
+          inner.map(unwrapped, f)
+        }
+      }
     }
+
+
 }
