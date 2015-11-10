@@ -1,4 +1,4 @@
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{FlatSpec, Matchers}
 
 class AutoMonadTest extends FlatSpec with Matchers {
 
@@ -28,6 +28,36 @@ class AutoMonadTest extends FlatSpec with Matchers {
 
         AutoMonad(??? : List[Option[Int]]).
           flatMap{ i: Int => List(i * 2)}.
+          get : List[Option[Int]]
+    """ should compile
+  }
+
+  "merge" should "accept Raise definitions" in {
+    """
+       import scalaz._; import Scalaz._
+
+        AutoMonad(??? : Option[Int]).
+          merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
+          get : Option[Int]
+    """ should compile
+  }
+
+  it should "map on an outer functor" in {
+    """
+       import scalaz._; import Scalaz._
+
+        AutoMonad(??? : List[Option[Int]]).
+          merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
+          get : List[Option[Int]]
+    """ should compile
+  }
+
+  it should "flat map on an outer monad" in {
+    """
+       import scalaz._; import Scalaz._
+
+        AutoMonad(??? : List[Option[Int]]).
+          merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
           get : List[Option[Int]]
     """ should compile
   }

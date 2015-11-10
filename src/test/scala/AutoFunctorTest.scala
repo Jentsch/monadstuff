@@ -9,16 +9,16 @@ class AutoFunctorTest extends FlatSpec with Matchers {
          map{ i: Int => i * 2 }.
          get : List[Int]
     """ should compile
-    
+
     """
        import scalaz._; import Scalaz._
-       
+
        AutoFunctor(List("1", "2", "3")).
          map{ str: String => str.toInt }.
          get : List[Int]
     """ should compile
   }
-  
+
   it should "use Scalaz" in {
     """
        import scalaz._; import Scalaz._
@@ -33,7 +33,7 @@ class AutoFunctorTest extends FlatSpec with Matchers {
          map{ i: Int => i * 2 }.
          get : List[Int]
     """ shouldNot compile
-    
+
     """
        import scalaz._; import Scalaz._
 
@@ -52,11 +52,11 @@ class AutoFunctorTest extends FlatSpec with Matchers {
          get : List[Int]
     """ shouldNot compile
   }
-  
+
   it should "catch functors in between" in {
     """
        import scalaz._; import Scalaz._
-       
+
        AutoFunctor(List(Some(1), Some(2), None)).
          map{ i: Option[Int] => i.getOrElse(3) }.
          get : List[Int]
@@ -94,5 +94,19 @@ class AutoFunctorTest extends FlatSpec with Matchers {
          get : Future[List[Option[Int]]]
     """ should compile
   }
-  
+
+  it should "accepts generic functions" in {
+    """
+       import scalaz._; import Scalaz._
+       import scala.concurrent.Future
+       import scala.concurrent.ExecutionContext.Implicits.global
+
+       def head[X](list: List[X]): X = ???
+
+       AutoFunctor(Future{???}: Future[List[String]]).
+         map(head[String]).
+         get : Future[String]
+    """ should compile
+  }
+
 }
