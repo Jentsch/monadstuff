@@ -1,7 +1,7 @@
 
 import scala.language.higherKinds
+import scalaz.Scalaz._
 import scalaz._
-import Scalaz._
 
 trait AutoMonadStrategy[SI, I, O] {
   type SO
@@ -9,7 +9,7 @@ trait AutoMonadStrategy[SI, I, O] {
   def flatMap(data: SI)(f: I => O): SO
 }
 
-object AutoMonadStrategy {
+object AutoMonadStrategy extends MapFallback {
   /**
     * End of recursive search for a AutoMonadStrategy
     * @tparam I accepting type
@@ -31,15 +31,7 @@ object AutoMonadStrategy {
         data.flatMap(f)
     }
 
-  implicit def FB[F[_] : Functor, B[_] : Bind, I, O] =
-    new AutoMonadStrategy[F[B[I]], I, B[O]] {
-      override type SO = F[B[O]]
-
-      override def flatMap(data: F[B[I]])(f: (I) => B[O]): SO =
-        data.map(_.flatMap(f))
-    }
-
-  implicit def BF[B[_] : Applicative : Monad, F[_] : Traverse, I, O] =
+  implicit def BT[B[_] : Monad, F[_] : Traverse, I, O] =
     new AutoMonadStrategy[B[F[I]], I, B[O]] {
       override type SO = B[F[O]]
 
@@ -47,12 +39,12 @@ object AutoMonadStrategy {
         implicitly[Bind[B]].bind(data)(_.map(f).sequence)
     }
 
-  implicit def FBF[F1[_] : Functor, B[_] : Monad, F2[_] : Traverse, I, O] =
-    new AutoMonadStrategy[F1[B[F2[I]]], I, B[O]] {
-      override type SO = F1[B[F2[O]]]
+  implicit def BTT[B[_] : Monad, T1[_] : Traverse, T2[_] : Traverse, I, O] =
+    new AutoMonadStrategy[B[T1[T2[I]]], I, B[O]] {
+      override type SO = B[T1[T2[O]]]
 
-      override def flatMap(data: F1[B[F2[I]]])(f: (I) => B[O]): SO =
-        data.map(d => implicitly[Bind[B]].bind(d)(_.map(f).sequence))
+      override def flatMap(data: B[T1[T2[I]]])(f: (I) => B[O]): SO =
+        implicitly[Bind[B]].bind(data)(_.map(_.map(f).sequence).sequence)
     }
 
   //  implicit def bind[B[_], IIS, I, O](implicit outer: Bind[B], inner: AutoMonadStrategy[IIS, I, B[O]]{type SO = B[O]}) =
