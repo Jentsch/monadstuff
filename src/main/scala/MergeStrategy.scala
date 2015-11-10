@@ -1,4 +1,5 @@
-import scala.languageFeature.higherKinds
+
+import scala.language.higherKinds
 import scalaz.Scalaz._
 import scalaz.{Bind, Functor}
 

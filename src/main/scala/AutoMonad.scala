@@ -7,7 +7,7 @@ final case class AutoMonad[Shape](get: Shape) {
     * Requires that the type of ```f``` is explicitly given.
     */
   def map[I, O](f: I => O)(implicit strategy: AutoFunctorStrategy[Shape, I, O]): AutoMonad[strategy.SO] =
-    AutoMonad(strategy.map(get, f))
+    AutoMonad(strategy.map(get)(f))
 
   def flatMap[I, O](f: I => O)(implicit strategy: AutoMonadStrategy[Shape, I, O]): AutoMonad[strategy.SO] =
     AutoMonad(strategy.flatMap(get)(f))
