@@ -1,5 +1,4 @@
-
-import scala.language.higherKinds
+package monadic
 
 case class AutoFunctor[SI](get: SI) {
   /**

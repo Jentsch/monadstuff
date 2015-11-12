@@ -1,3 +1,4 @@
+package monadic
 
 import scala.language.higherKinds
 import scalaz.Scalaz._

@@ -1,3 +1,5 @@
+package monadic
+
 import org.scalatest.{FlatSpec, Matchers}
 
 class AutoMonadTest extends FlatSpec with Matchers {
@@ -6,7 +8,7 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-       AutoMonad(??? : List[Int]).
+       monadic.AutoMonad(??? : List[Int]).
          flatMap{ i: Int => List(i, i)}.
          get : List[Int]
     """ should compile
@@ -16,7 +18,7 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        AutoMonad(??? : List[Option[Int]]).
+        monadic.AutoMonad(??? : List[Option[Int]]).
           flatMap{ i: Int => Option(i * 2)}.
           get : List[Option[Int]]
     """ should compile
@@ -26,7 +28,7 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        AutoMonad(??? : List[Option[Int]]).
+        monadic.AutoMonad(??? : List[Option[Int]]).
           flatMap{ i: Int => List(i * 2)}.
           get : List[Option[Int]]
     """ should compile
@@ -36,7 +38,7 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        AutoMonad(??? : Option[Int]).
+        monadic.AutoMonad(??? : Option[Int]).
           merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
           get : Option[Int]
     """ should compile
@@ -46,7 +48,7 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        AutoMonad(??? : List[Option[Int]]).
+        monadic.AutoMonad(??? : List[Option[Int]]).
           merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
           get : List[Option[Int]]
     """ should compile
@@ -56,7 +58,7 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        AutoMonad(??? : List[Option[Int]]).
+        monadic.AutoMonad(??? : List[Option[Int]]).
           merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
           get : List[Option[Int]]
     """ should compile

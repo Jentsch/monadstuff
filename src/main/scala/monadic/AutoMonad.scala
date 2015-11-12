@@ -1,3 +1,4 @@
+package monadic
 
 final case class AutoMonad[Shape](get: Shape) {
 

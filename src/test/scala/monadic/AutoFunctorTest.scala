@@ -1,3 +1,5 @@
+package monadic
+
 import org.scalatest.{FlatSpec, Matchers}
 
 class AutoFunctorTest extends FlatSpec with Matchers {
