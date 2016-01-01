@@ -1,6 +1,6 @@
 package monadic
 
-final case class AutoMonad[Shape](get: Shape) {
+final case class AutoMonad[Shape](data: Shape) {
 
   /**
     * map : ```A[B[...X]] -> (X -> Y) -> A[B[...Y]]```, ```X``` could still be a functor.
@@ -8,11 +8,13 @@ final case class AutoMonad[Shape](get: Shape) {
     * Requires that the type of ```f``` is explicitly given.
     */
   def map[I, O](f: I => O)(implicit strategy: AutoFunctorStrategy[Shape, I, O]): AutoMonad[strategy.SO] =
-    AutoMonad(strategy.map(get)(f))
+    AutoMonad(strategy.map(data)(f))
 
   def flatMap[I, O](f: I => O)(implicit strategy: AutoMonadStrategy[Shape, I, O]): AutoMonad[strategy.SO] =
-    AutoMonad(strategy.flatMap(get)(f))
+    AutoMonad(strategy.flatMap(data)(f))
   
   def merge[I, O](f: I => O)(implicit strategy: MergeStrategy[Shape, I, O]): AutoMonad[strategy.SO] =
-    AutoMonad(strategy.merge(get)(f))
+    AutoMonad(strategy.merge(data)(f))
+
+  def get: Shape = data
 }
