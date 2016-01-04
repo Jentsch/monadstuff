@@ -45,7 +45,7 @@ class AutoFunctorTest extends FlatSpec with Matchers {
     """ should compile
   }
 
-  it should "not map over discontiguous functors" in {
+  it should "not map over disconnected functors" in {
     """
        import scalaz._; import Scalaz._
 

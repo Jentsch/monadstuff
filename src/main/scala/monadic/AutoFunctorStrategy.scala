@@ -27,7 +27,7 @@ trait AutoFunctorStrategy[InputShape, I, O] {
   *
   * Aside testing there should be no reason to construct this objects manually.
   */
-object AutoFunctorStrategy {
+object AutoFunctorStrategy extends MultiFunctorStrategy {
 
   /**
     * End of the recursion if the input type of ```f``` matches the input shape.
