@@ -13,7 +13,7 @@ class MultiFunctorStrategyTest extends FlatSpec with Matchers {
 
   "tuples" should "map on the first argument" in {
     """
-       AutoFunctor((1, "w")).
+       AutoFunctor(??? : (Int, String)).
          map{ i: Int => i.toDouble }.
          get : (Double, String)
     """ should compile
@@ -21,7 +21,7 @@ class MultiFunctorStrategyTest extends FlatSpec with Matchers {
 
   it should "map on the second argument" in {
     """
-       AutoFunctor((1, "1.5")).
+       AutoFunctor(??? : (Int, String)).
          map{ s: String => s.toDouble }.
          get : (Int, Double)
     """ should compile
@@ -29,7 +29,7 @@ class MultiFunctorStrategyTest extends FlatSpec with Matchers {
 
   "either" should "map on left" in {
     """
-       AutoFunctor(Left(1) : Either[Int, String]).
+       AutoFunctor(??? : Either[Int, String]).
          map{ i: Int => i.toDouble }.
          get : Either[Double, String]
     """ should compile
@@ -37,7 +37,7 @@ class MultiFunctorStrategyTest extends FlatSpec with Matchers {
 
   it should "map on right" in {
     """
-       AutoFunctor(Right("1.0") : Either[Int, String]).
+       AutoFunctor(??? : Either[Int, String]).
          map{ s: String => s.toDouble }.
          get : Either[Int, Double]
     """ should compile

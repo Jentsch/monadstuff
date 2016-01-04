@@ -8,9 +8,9 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-       monadic.AutoMonad(??? : List[Int]).
-         flatMap{ i: Int => List(i, i)}.
-         get : List[Int]
+       AutoMonad(??? : List[Int]).
+        flatMap{ i: Int => List(i, i)}.
+        get : List[Int]
     """ should compile
   }
 
@@ -18,9 +18,9 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        monadic.AutoMonad(??? : List[Option[Int]]).
-          flatMap{ i: Int => Option(i * 2)}.
-          get : List[Option[Int]]
+       AutoMonad(??? : List[Option[Int]]).
+         flatMap{ i: Int => Option(i * 2)}.
+         get : List[Option[Int]]
     """ should compile
   }
 
@@ -28,9 +28,9 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        monadic.AutoMonad(??? : List[Option[Int]]).
-          flatMap{ i: Int => List(i * 2)}.
-          get : List[Option[Int]]
+       AutoMonad(??? : List[Option[Int]]).
+         flatMap{ i: Int => List(i * 2)}.
+         get : List[Option[Int]]
     """ should compile
   }
 
@@ -38,9 +38,9 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        monadic.AutoMonad(??? : Option[Int]).
-          merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
-          get : Option[Int]
+       AutoMonad(??? : Option[Int]).
+         merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
+         get : Option[Int]
     """ should compile
   }
 
@@ -48,9 +48,9 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        monadic.AutoMonad(??? : List[Option[Int]]).
-          merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
-          get : List[Option[Int]]
+       AutoMonad(??? : List[Option[Int]]).
+         merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
+         get : List[Option[Int]]
     """ should compile
   }
 
@@ -58,9 +58,9 @@ class AutoMonadTest extends FlatSpec with Matchers {
     """
        import scalaz._; import Scalaz._
 
-        monadic.AutoMonad(??? : List[Option[Int]]).
-          merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
-          get : List[Option[Int]]
+       AutoMonad(??? : List[Option[Int]]).
+         merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
+         get : List[Option[Int]]
     """ should compile
   }
 
