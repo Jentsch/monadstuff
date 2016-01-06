@@ -1,66 +1,60 @@
 package monadic
 
 import org.scalatest.{FlatSpec, Matchers}
+import monadic.Syntax._
+import scalaz._
+import Scalaz._
 
 class AutoMonadTest extends FlatSpec with Matchers {
 
+  type A = Int
+
+
   "flatMap" should "use the flatMap of the inner monad" in {
     """
-       import scalaz._; import Scalaz._
-
-       AutoMonad(??? : List[Int]).
-        flatMap{ i: Int => List(i, i)}.
-        get : List[Int]
+       (??? : List[A]).
+         selectiveFlatMap{ _: A => ??? : List[A] }
+         : List[A]
     """ should compile
   }
 
   it should "step over an outer functor" in {
     """
-       import scalaz._; import Scalaz._
-
-       AutoMonad(??? : List[Option[Int]]).
-         flatMap{ i: Int => Option(i * 2)}.
-         get : List[Option[Int]]
+       (??? : List[Option[A]]).
+         selectiveFlatMap{ _: A => ??? : Option[A] }
+         : List[Option[A]]
     """ should compile
   }
 
   it should "rewrap an inner functor" in {
     """
-       import scalaz._; import Scalaz._
-
-       AutoMonad(??? : List[Option[Int]]).
-         flatMap{ i: Int => List(i * 2)}.
-         get : List[Option[Int]]
+       (??? : List[Option[A]]).
+         selectiveFlatMap{ _: A => ??? : List[A] }
+         : List[Option[A]]
     """ should compile
   }
 
   "merge" should "accept Raise definitions" in {
     """
-       import scalaz._; import Scalaz._
-
-       AutoMonad(??? : Option[Int]).
-         merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
-         get : Option[Int]
+       (??? : Option[A]).
+         selectiveMerge{ _: A => ??? : Raise.Error[A] }
+         : Option[A]
     """ should compile
   }
 
   it should "map on an outer functor" in {
     """
-       import scalaz._; import Scalaz._
-
-       AutoMonad(??? : List[Option[Int]]).
-         merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
-         get : List[Option[Int]]
+       (??? : List[Option[A]]).
+         selectiveMerge{ _: A => ??? : Raise.Error[A] }
+         : List[Option[A]]
     """ should compile
   }
 
   it should "flat map on an outer monad" in {
     """
-       import scalaz._; import Scalaz._
-
-       AutoMonad(??? : List[Option[Int]]).
-         merge{ i: Int => Right(i * 2): Raise.Error[Int]}.
-         get : List[Option[Int]]
+       (??? : List[Option[A]]).
+         selectiveMerge{ _: A => ??? : Raise.Error[A] }
+         : List[Option[A]]
     """ should compile
   }
 

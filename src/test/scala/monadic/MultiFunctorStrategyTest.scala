@@ -1,6 +1,7 @@
 package monadic
 
 import org.scalatest.{Matchers, FlatSpec}
+import monadic.Syntax._
 
 class MultiFunctorStrategyTest extends FlatSpec with Matchers {
 
@@ -13,33 +14,33 @@ class MultiFunctorStrategyTest extends FlatSpec with Matchers {
 
   "tuples" should "map on the first argument" in {
     """
-       AutoFunctor(??? : (Int, String)).
-         map{ i: Int => i.toDouble }.
-         get : (Double, String)
+       (??? : (Int, String)).
+         selectiveMap{ i: Int => i.toDouble }
+         : (Double, String)
     """ should compile
   }
 
   it should "map on the second argument" in {
     """
-       AutoFunctor(??? : (Int, String)).
-         map{ s: String => s.toDouble }.
-         get : (Int, Double)
+       (??? : (Int, String)).
+         selectiveMap{ s: String => s.toDouble }
+         : (Int, Double)
     """ should compile
   }
 
   "either" should "map on left" in {
     """
-       AutoFunctor(??? : Either[Int, String]).
-         map{ i: Int => i.toDouble }.
-         get : Either[Double, String]
+       (??? : Either[Int, String]).
+         selectiveMap{ i: Int => i.toDouble }
+         : Either[Double, String]
     """ should compile
   }
 
   it should "map on right" in {
     """
-       AutoFunctor(??? : Either[Int, String]).
-         map{ s: String => s.toDouble }.
-         get : Either[Int, Double]
+       (??? : Either[Int, String]).
+         selectiveMap{ s: String => s.toDouble }
+         : Either[Int, Double]
     """ should compile
   }
 }
