@@ -6,41 +6,41 @@ import monadic.Syntax._
 class MultiFunctorStrategyTest extends FlatSpec with Matchers {
 
   "the examples" should "be correct" in {
-    val result = AutoFunctor(('hello, "world")).
-      map { world: String => world.length }.get
-    //            ^- the type defines static that we map the second element
-    result ===('hello, 5)
+    val result = ('hello, "world").
+      selectiveMap { world: String => world.length }
+    //                        ^- the type defines static that we map the second element
+    result === ('hello, 5)
   }
 
   "tuples" should "map on the first argument" in {
     """
-       (??? : (Int, String)).
-         selectiveMap{ i: Int => i.toDouble }
-         : (Double, String)
+       some[(A, B)].
+         selectiveMap{ someFunction[A => C] }
+         : (C, B)
     """ should compile
   }
 
   it should "map on the second argument" in {
     """
-       (??? : (Int, String)).
-         selectiveMap{ s: String => s.toDouble }
-         : (Int, Double)
+       some[(A, B)].
+         selectiveMap{ someFunction[B => C] }
+         : (A, C)
     """ should compile
   }
 
   "either" should "map on left" in {
     """
-       (??? : Either[Int, String]).
-         selectiveMap{ i: Int => i.toDouble }
-         : Either[Double, String]
+       some[Either[A, B]].
+         selectiveMap{ someFunction[A => C] }
+         : Either[C, B]
     """ should compile
   }
 
   it should "map on right" in {
     """
-       (??? : Either[Int, String]).
-         selectiveMap{ s: String => s.toDouble }
-         : Either[Int, Double]
+       some[Either[A, B]].
+         selectiveMap{ someFunction[B => C] }
+         : Either[A, C]
     """ should compile
   }
 }

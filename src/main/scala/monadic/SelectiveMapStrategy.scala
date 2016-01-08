@@ -12,13 +12,13 @@ import scalaz.Scalaz._
   * @tparam I Parameter of the function (in)
   * @tparam O Return type of the function (out)
   */
-trait AutoFunctorStrategy[InputShape, I, O] {
+trait SelectiveMapStrategy[InputShape, I, O] {
   /**
     * Returned stack of functor and output variables
     */
-  type SO
+  type ReturnType
 
-  def map(data: InputShape)(f: I => O): SO
+  def map(data: InputShape)(f: I => O): ReturnType
 }
 
 
@@ -27,7 +27,7 @@ trait AutoFunctorStrategy[InputShape, I, O] {
   *
   * Aside testing there should be no reason to construct this objects manually.
   */
-object AutoFunctorStrategy extends MultiFunctorStrategy {
+object SelectiveMapStrategy extends MultiFunctorStrategy {
 
   /**
     * End of the recursion if the input type of ```f``` matches the input shape.
@@ -36,10 +36,11 @@ object AutoFunctorStrategy extends MultiFunctorStrategy {
     * @tparam O output type
     */
   implicit def direct[I, O] =
-    new AutoFunctorStrategy[I, I, O] {
-      override type SO = O
+    new SelectiveMapStrategy[I, I, O] {
+      override type ReturnType = O
 
-      override def map(data: I)(f: I => O) = f(data)
+      override def map(data: I)(f: I => O): ReturnType =
+        f(data)
     }
 
   /**
@@ -51,11 +52,11 @@ object AutoFunctorStrategy extends MultiFunctorStrategy {
     * @tparam I input type
     * @tparam O output type
     */
-  implicit def recursive[F[_] : Functor, ISI, I, O](implicit inner: AutoFunctorStrategy[ISI, I, O]) =
-    new AutoFunctorStrategy[F[ISI], I, O] {
-      override type SO = F[inner.SO]
+  implicit def recursive[F[_] : Functor, ISI, I, O](implicit inner: SelectiveMapStrategy[ISI, I, O]) =
+    new SelectiveMapStrategy[F[ISI], I, O] {
+      override type ReturnType = F[inner.ReturnType]
 
-      override def map(data: F[ISI])(f: I => O): SO =
+      override def map(data: F[ISI])(f: I => O): ReturnType =
         data.map(inner.map(_)(f))
     }
 

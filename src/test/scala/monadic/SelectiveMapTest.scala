@@ -5,7 +5,7 @@ import scalaz._
 import Scalaz._
 import monadic.Syntax._
 
-class AutoFunctorTest extends FlatSpec with Matchers {
+class SelectiveMapTest extends FlatSpec with Matchers {
   type A = Int
   type B = String
 

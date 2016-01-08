@@ -7,6 +7,9 @@ monad boilerplaid.
  How to use
 ------------
 
+This library provides three methods: ```selectiveMap```,
+```selectiveFlatMap```, and ```selectiveMerge```. Enable
+
 ```scala
 import scalaz._
 import Scalaz._
