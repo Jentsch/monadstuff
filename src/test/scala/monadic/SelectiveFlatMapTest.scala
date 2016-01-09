@@ -16,6 +16,18 @@ class SelectiveFlatMapTest extends FlatSpec with Matchers {
     """ should compile
   }
 
+  it should "behave like map" in {
+    """
+       some[A].
+         selectiveFlatMap{ someFunction[A => B] }
+         : B
+
+       some[List[A]].
+         selectiveFlatMap{ someFunction[A => B] }
+         : List[B]
+    """ should compile
+  }
+
   it should "step over an outer functor" in {
     """
        some[List[Option[A]]].

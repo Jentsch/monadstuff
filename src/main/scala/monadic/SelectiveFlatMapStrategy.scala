@@ -4,10 +4,10 @@ import scala.language.higherKinds
 import scalaz.Scalaz._
 import scalaz._
 
-trait SelectiveFlatMapStrategy[SI, I, O] {
+trait SelectiveFlatMapStrategy[InputShape, I, O] {
   type ReturnType
 
-  def flatMap(data: SI)(f: I => O): ReturnType
+  def flatMap(data: InputShape)(f: I => O): ReturnType
 }
 
 object SelectiveFlatMapStrategy extends MapFallback {
@@ -32,12 +32,12 @@ object SelectiveFlatMapStrategy extends MapFallback {
         data.flatMap(f)
     }
 
-  implicit def BT[B[_] : Monad, F[_] : Traverse, I, O] =
-    new SelectiveFlatMapStrategy[B[F[I]], I, B[O]] {
-      override type ReturnType = B[F[O]]
+  implicit def BT[B[_] : Monad, T[_] : Traverse, I, O] =
+    new SelectiveFlatMapStrategy[B[T[I]], I, B[O]] {
+      override type ReturnType = B[T[O]]
 
-      override def flatMap(data: B[F[I]])(f: (I) => B[O]): ReturnType =
-        implicitly[Bind[B]].bind(data)(_.map(f).sequence)
+      override def flatMap(data: B[T[I]])(f: (I) => B[O]): ReturnType =
+        data.flatMap(_.map(f).sequence)
     }
 
   implicit def BTT[B[_] : Monad, T1[_] : Traverse, T2[_] : Traverse, I, O] =
@@ -45,7 +45,7 @@ object SelectiveFlatMapStrategy extends MapFallback {
       override type ReturnType = B[T1[T2[O]]]
 
       override def flatMap(data: B[T1[T2[I]]])(f: (I) => B[O]): ReturnType =
-        implicitly[Bind[B]].bind(data)(_.map(_.map(f).sequence).sequence)
+        data.flatMap(_.map(_.map(f).sequence).sequence)
     }
 
   //  implicit def bind[B[_], IIS, I, O](implicit outer: Bind[B], inner: AutoMonadStrategy[IIS, I, B[O]]{type SO = B[O]}) =

@@ -11,22 +11,22 @@ class SelectiveMapTest extends FlatSpec with Matchers {
 
   it should "behave the same like a normal map on highest nested functor" in {
     """
-       (??? : List[A]).
-         selectiveMap{ _: A => ??? : A }
+       some[List[A]].
+         selectiveMap{ someFunction[A => A] }
          : List[A]
     """ should compile
 
     """
-       (??? : List[A]).
-         selectiveMap{ _: A => ??? : B }
+       some[List[A]].
+         selectiveMap{ someFunction[A => B] }
          : List[B]
     """ should compile
   }
 
   it should "not map over disconnected functors" in {
     """
-       (??? : Option[List[A]]).
-         selectiveMap{ _: Option[A] => ??? : A }
+       some[Option[List[A]]].
+         selectiveMap{ someFunction[Option[A] => A] }
          : List[A]
     """ shouldNot compile
   }
@@ -41,9 +41,17 @@ class SelectiveMapTest extends FlatSpec with Matchers {
 
   it should "unwrap nested functors" in {
     """
-       (??? : List[Option[A]]).
-         selectiveMap{ _: A => ??? : A }
+       some[List[Option[A]]].
+         selectiveMap{ someFunction[A => A] }
          : List[Option[A]]
+    """ should compile
+  }
+
+  it should "like a function application on the datatype it self" in {
+    """
+       some[A].
+         selectiveMap{ someFunction[A => B] }
+         : B
     """ should compile
   }
 
@@ -74,7 +82,7 @@ class SelectiveMapTest extends FlatSpec with Matchers {
 
        def head[X](list: List[X]): X = ???
 
-       (??? : Future[List[B]]).
+       some[Future[List[B]]].
          selectiveMap(head[B])
          : Future[B]
     """ should compile
