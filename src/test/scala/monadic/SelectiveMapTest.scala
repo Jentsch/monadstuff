@@ -76,14 +76,16 @@ class SelectiveMapTest extends FlatSpec with Matchers {
   }
 
   it should "accepts generic functions" in {
+    pending
+
     """
        import scala.concurrent.Future
        import scala.concurrent.ExecutionContext.Implicits.global
 
        def head[X](list: List[X]): X = ???
 
-       some[Future[List[B]]].
-         selectiveMap(head[B])
+       some[Future[List]].
+         selectiveMap(head)
          : Future[B]
     """ should compile
   }
